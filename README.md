@@ -58,13 +58,10 @@ Log back in via ssh. If node installed correctly, we can check the version:
 
 The response should be something like: `v0.10.2`. 
 
-Next, we'll use NPM to install a few more modules needed for our PrintServer script:
+Next, we'll use NPM to install a few more modules needed for our PrintServer script (give it a few more minutes):
     
     npm install ipp pdfkit ibtrealtimesjnode
 
-*Note: If you receive an error: `Error: failed to fetch from registry:` - you can try changing to a non-secure connection using the following command and try the above again:
-
-    npm config set registry http://registry.npmjs.org/
 
 Ok, now let's make a new directory in your PI's home folder:
 
@@ -80,7 +77,7 @@ Download Kidddo Print Server:
 
 Change Directory to "Rasberry-Pi-Print-Server":
 
-    cd Rasberry-Pi-Print-Server
+    cd Raspberry-Pi-Print-Server
 
 Open PrintServer.js in Vim editor to add your organization's token:
 
@@ -89,9 +86,11 @@ Open PrintServer.js in Vim editor to add your organization's token:
 Replace `abc` on line 4 with your organization's token (found in Settings area of your Admin site: Settings>Set Printer>Server) and save the file. If you are new to Vim, here's a command cheat sheet: [http://www.fprintf.net/vimCheatSheet.html](http://www.fprintf.net/vimCheatSheet.html).
 
 ===
-Next we'll install a package that will automatically run our print server when the PI boots-up (this may take a few minutes):
 
-    npm install forever
+
+Next we'll install a package that will automatically run our print server every time the the PI boots-up (this will take a while):
+
+    npm install -g forever
 
 And finally, open rc.local in Vim:
 
@@ -99,7 +98,7 @@ And finally, open rc.local in Vim:
 
 And add the following just before exit:
 
-    sudo -u pi forever start -l /home/pi/kidddo/Rasberry-Pi-Print-Server/PrintServer.log -a /home/pi/kidddo/Rasberry-Pi-Print-Server/PrintServer.js
+    sudo -u pi forever start -l /home/pi/kidddo/Raspberry-Pi-Print-Server/PrintServer.log -a /home/pi/kidddo/Raspberry-Pi-Print-Server/PrintServer.js
 
 ####Configure Printers
 Add your user (pi) to the to the lpadmin group (so we can manage printers):
@@ -130,7 +129,7 @@ Add `Allow @LOCAL` to both the `<Location />` and `<Location /admin>` sections:
       Order allow,deny
     </Location>
 
-Save (write & quit) cupsd.conf
+Save (write & quit `:wq`) cupsd.conf
 
 Restart CUPS:
 
