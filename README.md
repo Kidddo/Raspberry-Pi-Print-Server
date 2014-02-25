@@ -27,12 +27,38 @@ If you are new to the Raspberry Pi, check out the following links:
 * Change your password by typing `passwd` immediately after login.
 
 ####Install Software
-    sudo aptitude install nodejs npm cups vim
-This might take a while. Then:
+First, we'll install CUPS (Common Unix Printing System), and Vim (command line editor). This may take several minutes:
 
-    sudo ln -s /usr/bin/nodejs /usr/local/bin/node
+    sudo aptitude install cups vim
 
-Next, we'll use NPM to install the packages needed for our PrintServer script:
+Next, we need to install Node.js (our print server platform). Start by downloading the PI build:
+    
+    wget http://nodejs.org/dist/v0.10.2/node-v0.10.2-linux-arm-pi.tar.gz
+
+Unpack it:
+
+    tar -xvzf node-v0.10.2-linux-arm-pi.tar.gz
+    
+Open or create `.bash_profile`:
+
+    vim .bash_profile
+
+And add the following and then `:wq` write & quit it:
+
+    NODE_JS_HOME=/home/pi/node-v0.10.2-linux-arm-pi 
+    PATH=$PATH:$NODE_JS_HOME/bin 
+
+Reboot the PI:
+
+    sudo reboot
+
+Log back in via ssh. If node installed correctly, we can check the version:
+
+    node -v
+
+The response should be something like: `v0.10.2`. 
+
+Next, we'll use NPM to install a few more modules needed for our PrintServer script:
     
     npm install ipp pdfkit ibtrealtimesjnode
 
@@ -50,7 +76,7 @@ Change Directory to "kidddo":
 
 Download Kidddo Print Server:
 
-    git clone git://github.com/Kidddo/Rasberry-Pi-Print-Server
+    git clone git://github.com/Kidddo/Raspberry-Pi-Print-Server
 
 Change Directory to "Rasberry-Pi-Print-Server":
 

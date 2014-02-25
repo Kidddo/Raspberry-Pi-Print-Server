@@ -215,10 +215,7 @@ function timestamp() {
 // LOAD DATA
 function load() {
 	console.log('Loading...');
-	var options = require('url').parse('https://kidddo.org/api/printLoad.php?token='+token);
-	options.rejectUnauthorized = false;
-	options.agent = new https.Agent(options);
-	https.get(options, function(res) {
+	https.get('https://kidddo.org/api/printLoad.php?token='+token, function(res) {
 	  res.on('data', function(d) {
 	    console.log('Loaded');
 	    d = JSON.parse(d);
