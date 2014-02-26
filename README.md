@@ -44,6 +44,10 @@ Then:
 
     sudo apt-get upgrade
 
+===
+*The following process takes about 20 minutes*
+
+===
 ####Install Software
 Create a directory for NodeJS - which is the platform that our Print Server will run on:
 
@@ -107,7 +111,7 @@ Open PrintServer.js in Vim editor to add your organization's token:
 
 Replace `abc` on line 4 with your organization's token (found in Settings area of your Admin site: Settings>Set Printer>Server) and save the file.
 
-####Automatically start print server on boot-up:
+####Automatically start print server on boot-up 
 
 Create a start script for Node:
 
@@ -152,6 +156,10 @@ Register the script as a service with 'update-rc.d':
     sudo update-rc.d print.sh defaults
 
 ####Configure Printers
+Install CUPS (Common Unix Printing System):
+
+    sudo aptitude install cups
+
 Add your user (pi) to the to the lpadmin group (so we can manage printers):
 
     sudo usermod -aG lpadmin pi
