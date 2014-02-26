@@ -24,33 +24,55 @@ If you are new to the Raspberry Pi, check out the following links:
 	* Use a network utility like [LanScan](https://itunes.apple.com/us/app/lanscan/id472226235?mt=12):![image](http://cr8.me/u/screen_shot_2014-02-19_at_3.46.05_pm_7d9f.png)
 	* OR log into your router and look at the DHCP lease table.
 * SSH to your PI: `ssh pi@yourIPaddress` eg. `ssh pi@192.168.0.18`. The default password is `raspberry`.
-* Change your password by typing `passwd` immediately after login.
+* You can change your password by typing `passwd` immediately after login.
+
+It's also recommended that you make a couple of configuration changes to your pi:
+
+    sudo raspi-config
+
+![image](http://cr8.me/u/screen_shot_2014-02-25_at_5.44.54_pm_ec2b.png)
+
+1. Expand Filesystem to fill up entire SD card
+2. Advanced Options > Memory Split: Change to 16 (the minimum) since we're not using the graphic-intensive tasks
+
+===
+Let's make sure everything is up to date:
+
+    sudo apt-get update
+
+Then:
+
+    sudo apt-get upgrade
 
 ####Install Software
-First, we'll install CUPS (Common Unix Printing System), and Vim (command line editor). This may take several minutes:
+Create a directory for NodeJS - which is the platform that our Print Server will run on:
 
-    sudo aptitude install cups vim
+    sudo mkdir /opt/node
 
-Next, we need to install Node.js (our print server platform). Start by downloading the PI build:
-    
+Download Node.js:
+
     wget http://nodejs.org/dist/v0.10.2/node-v0.10.2-linux-arm-pi.tar.gz
 
 Unpack it:
 
     tar -xvzf node-v0.10.2-linux-arm-pi.tar.gz
-    
-Open or create `.bash_profile`:
 
-    vim .bash_profile
+Copy it to our directory:
 
-And add the following and then `:wq` write & quit it:
+    sudo cp -r node-v0.10.2-linux-arm-pi/* /opt/node
 
-    NODE_JS_HOME=/home/pi/node-v0.10.2-linux-arm-pi 
-    PATH=$PATH:$NODE_JS_HOME/bin 
+Open `/etc/profile` using "nano" (built-in editor) or use your editor of choice:
 
-Reboot the PI:
+    sudo nano /etc/profile
 
-    sudo reboot
+And add the following before `export PATH`, exit & save:
+
+    NODE_JS_HOME="/opt/node"
+    PATH="$PATH:$NODE_JS_HOME/bin"
+
+Logout:
+
+    logout
 
 Log back in via ssh. If node installed correctly, we can check the version:
 
@@ -81,24 +103,53 @@ Change Directory to "Rasberry-Pi-Print-Server":
 
 Open PrintServer.js in Vim editor to add your organization's token:
 
-    vim PrintServer.js
+    nano PrintServer.js
 
-Replace `abc` on line 4 with your organization's token (found in Settings area of your Admin site: Settings>Set Printer>Server) and save the file. If you are new to Vim, here's a command cheat sheet: [http://www.fprintf.net/vimCheatSheet.html](http://www.fprintf.net/vimCheatSheet.html).
+Replace `abc` on line 4 with your organization's token (found in Settings area of your Admin site: Settings>Set Printer>Server) and save the file.
 
-===
+####Automatically start print server on boot-up:
 
+Create a start script for Node:
 
-Next we'll install a package that will automatically run our print server every time the the PI boots-up (this will take a while):
+    nano print.sh
 
-    npm install -g forever
+Put the following content in `print.sh` and exit/save:
 
-And finally, open rc.local in Vim:
+    #!/bin/bash
+    
+    NODE=/opt/node/bin/node
+    SERVER_JS_FILE=/home/pi/kidddo/Raspberry-Pi-Print-Server/PrintServer.js
+    USER=pi
+    OUT=/home/pi/kidddo/PrintServer.log
+    
+    case "$1" in
+    
+    start)
+	    echo "starting node: $NODE $SERVER_JS_FILE"
+	    sudo -u $USER $NODE $SERVER_JS_FILE > $OUT 2>$OUT &
+	    ;;
+    
+    stop)
+	    killall $NODE
+	    ;;
+    
+    *)
+	    echo "usage: $0 (start|stop)"
+    esac
+    
+    exit 0
 
-    sudo vim /etc/rc.local
+Make the script executable with 'chmod':
 
-And add the following just before exit:
+    chmod 755 print.sh
 
-    sudo -u pi forever start -l /home/pi/kidddo/Raspberry-Pi-Print-Server/PrintServer.log -a /home/pi/kidddo/Raspberry-Pi-Print-Server/PrintServer.js
+Copy it to '/etc/init.d':
+
+    sudo cp print.sh /etc/init.d
+
+Register the script as a service with 'update-rc.d':
+
+    sudo update-rc.d print.sh defaults
 
 ####Configure Printers
 Add your user (pi) to the to the lpadmin group (so we can manage printers):
@@ -107,7 +158,7 @@ Add your user (pi) to the to the lpadmin group (so we can manage printers):
 
 Next, we'll make a few changes to the CUPS Configuration:
 
-    sudo vim /etc/cups/cupsd.conf
+    sudo nano /etc/cups/cupsd.conf
 
 Change `Listen localhost:631` to `Listen 0.0.0.0:631`:
 
@@ -129,7 +180,7 @@ Add `Allow @LOCAL` to both the `<Location />` and `<Location /admin>` sections:
       Order allow,deny
     </Location>
 
-Save (write & quit `:wq`) cupsd.conf
+Save cupsd.conf
 
 Restart CUPS:
 
@@ -166,4 +217,3 @@ Congrats! Repeat the process to add any additional printers. When finished, rebo
 In your Kidddo Admin Settings tab, Enable "Use Label Printers" and click "Save Settings". Then click "Set Printer" and enter your selected printer name eg. `DYMO_1` and click Print Test Label:
 
 ![image](http://cr8.me/u/screen_shot_2014-02-21_at_10.14.51_am_f18b.png)
-
