@@ -172,7 +172,7 @@ function realtime() {
 }
 function msg(m) {
 	m = JSON.parse(m);
-	if (m.type=='print'){
+	if (m.type=='print' && db.settings.printSolo==0){
 		if (m.children==0){
 			testPrint(m.printer, m.session)
 		} else {
