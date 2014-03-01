@@ -186,7 +186,7 @@ function msg(m) {
 
 // FORMATTING UTILITIES
 function getAge(dt,format) {
-    if (dt=='0000-00-00'){return 'Unknown'}
+    if (dt=='0000-00-00'){return ''}
     var t = new Date();
     var b = new Date(dt);
     var d = Math.floor((t-b)/(1000*60*60*24));
