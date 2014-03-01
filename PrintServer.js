@@ -186,6 +186,7 @@ function msg(m) {
 
 // FORMATTING UTILITIES
 function getAge(dt,format) {
+    if (dt=='0000-00-00'){return 'Unknown'}
     var t = new Date();
     var b = new Date(dt);
     var d = Math.floor((t-b)/(1000*60*60*24));
@@ -194,7 +195,6 @@ function getAge(dt,format) {
     var y = Math.floor(d/365);
     var c = (format)?'year-old':'years';
     var age = y;
-    if (!age){return 'Age Unknown'}
     if (m<24){age=m;c=(format)?'month-old':'months'}
     if (w<24){age=w;c=(format)?'week-old':'weeks'}
     if (d<24){age=d;c=(format)?'day-old':'days'}
