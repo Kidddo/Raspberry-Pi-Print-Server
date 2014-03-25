@@ -21,7 +21,7 @@ If you are new to the Raspberry Pi, check out the following links:
 * Copy the image to your SD card using your computer. ([Guide](http://elinux.org/RPi_Easy_SD_Card_Setup))
 * Insert the SD card into your Raspberry Pi and plug it in. Make sure the network cable is plugged in as well.
 * Locate your PI's IP address:
-	* Use a network utility like [LanScan](https://itunes.apple.com/us/app/lanscan/id472226235?mt=12):![image](http://cr8.me/u/screen_shot_2014-02-19_at_3.46.05_pm_7d9f.png)
+	* Use a network utility like [LanScan](https://itunes.apple.com/us/app/lanscan/id472226235?mt=12):![image](https://dl.dropboxusercontent.com/u/222645/Kidddo/github/screen_shot_2014-02-19_at_3.46.05_pm_7d9f.png)
 	* OR log into your router and look at the DHCP lease table.
 * SSH to your PI: `ssh pi@yourIPaddress` eg. `ssh pi@192.168.0.18`. The default password is `raspberry`.
 * You can change your password by typing `passwd` immediately after login.
@@ -30,7 +30,7 @@ It's also recommended that you make a couple of configuration changes to your pi
 
     sudo raspi-config
 
-![image](http://cr8.me/u/screen_shot_2014-02-25_at_5.44.54_pm_ec2b.png)
+![image](https://dl.dropboxusercontent.com/u/222645/Kidddo/github/screen_shot_2014-02-25_at_5.44.54_pm_ec2b.png)
 
 1. Expand Filesystem to fill up entire SD card
 2. Advanced Options > Memory Split: Change to 16 (the minimum) since we're not using the graphic-intensive tasks
@@ -196,27 +196,27 @@ Restart CUPS:
 
 Now we can leave the command line and open your web browser. Access the CUPS admin interface via the URL: `http://yourIPaddress:631/admin` eg. `http://192.168.0.18:631/admin`:
 
-![image](http://cr8.me/u/screen_shot_2014-02-21_at_9.53.34_am_c578.png)
+![image](https://dl.dropboxusercontent.com/u/222645/Kidddo/github/screen_shot_2014-02-21_at_9.53.34_am_c578.png)
 
 Click the "Add Printer" button. If prompted, enter your user info (default "pi"/"raspberry").
 
 Select Your label printer and click "Continue":
 
-![image](http://cr8.me/u/screen_shot_2014-02-21_at_9.57.56_am_ac13.png)
+![image](https://dl.dropboxusercontent.com/u/222645/Kidddo/github/screen_shot_2014-02-21_at_9.57.56_am_ac13.png)
 
 Enter a unique name for this printer and click "Continue". This is the name you will enter on all devices that print to this printer:
 
-![image](http://cr8.me/u/screen_shot_2014-02-21_at_9.59.29_am_9d61.png)
+![image](https://dl.dropboxusercontent.com/u/222645/Kidddo/github/screen_shot_2014-02-21_at_9.59.29_am_9d61.png)
 
 Click "Add Printer" on the Confirmation Screen.
 
 In "Set Default Options" change the Media Size to "Shipping Address" and click "Set Default Options" (If you have modified the label template in PrintServer.js or are using a printer other than DYMO LabelWriter, adjust these options accordingly):
 
-![image](http://cr8.me/u/screen_shot_2014-02-21_at_10.04.57_am_b6a9.png)
+![image](https://dl.dropboxusercontent.com/u/222645/Kidddo/github/screen_shot_2014-02-21_at_10.04.57_am_b6a9.png)
 
 Test your printer by selecting "Print Test Page" from the Maintenance Dropdown:
 
-![image](http://cr8.me/u/screen_shot_2014-02-21_at_10.11.16_am_636d.png)
+![image](https://dl.dropboxusercontent.com/u/222645/Kidddo/github/screen_shot_2014-02-21_at_10.11.16_am_636d.png)
 
 Congrats! Repeat the process to add any additional printers. When finished, reboot your PI:
 
@@ -224,4 +224,4 @@ Congrats! Repeat the process to add any additional printers. When finished, rebo
 
 In your Kidddo Admin Settings tab, Enable "Use Label Printers" and click "Save Settings". Then click "Set Printer" and enter your selected printer name eg. `DYMO_1` and click Print Test Label:
 
-![image](http://cr8.me/u/screen_shot_2014-02-21_at_10.14.51_am_f18b.png)
+![image](https://dl.dropboxusercontent.com/u/222645/Kidddo/github/screen_shot_2014-02-21_at_10.14.51_am_f18b.png)
