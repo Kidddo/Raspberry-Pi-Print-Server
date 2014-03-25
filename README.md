@@ -1,5 +1,5 @@
 ##Kidddo Print Server Raspberry Pi
-This guide will help you set up a [Kidddo](http://kidddo.org) Print Server on a Raspberry Pi. Portions of this guide are adapted from another [repository](https://github.com/churchio/checkin-printer).
+This guide will help you set up a [Kidddo](http://kidddo.com) Print Server on a Raspberry Pi. Portions of this guide are adapted from another [repository](https://github.com/churchio/checkin-printer).
 
 If you are new to the Raspberry Pi, check out the following links:
 
