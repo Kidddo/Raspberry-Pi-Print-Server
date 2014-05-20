@@ -216,20 +216,24 @@ function timestamp() {
 function load() {
 	console.log('Loading...');
 	https.get('https://kidddo.com/api/printLoad.php?token='+token, function(res) {
+	  var data = '';
 	  res.on('data', function(d) {
-	    console.log('Loaded');
-	    d = JSON.parse(d);
-	    if (d.status=='y') {
-	    	  db = d;
-	    	  console.log('Data Updated');
-	    	  // INITIALIZE REALTIME
-	    	  if (!live){
-	    	  	live = true;
-	    	  	realtime();
-	    	  }
-	    } else {
-	    	console.log(d.status)
-	    }
+	    data += d;
+	  });
+	  res.on('end', function () {
+	  	console.log('Loaded');
+	  	d = JSON.parse(data);
+	  	if (d.status=='y') {
+	  		  db = d;
+	  		  console.log('Data Updated');
+	  		  // INITIALIZE REALTIME
+	  		  if (!live){
+	  		  	live = true;
+	  		  	realtime();
+	  		  }
+	  	} else {
+	  		console.log(d.status)
+	  	}
 	  });
 	}).on('error', function(e) {
 	  console.error(e);
