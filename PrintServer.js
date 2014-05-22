@@ -23,6 +23,35 @@ function print(printerName, kids, fromSession) {
 		size: [165,288],// 30256 DYMO Large Shipping Labels
 		margins: 1
 	});
+	
+	var buffers = [];
+	doc.on('data', buffers.push.bind(buffers));
+	doc.on('end', function () {
+	    if (totalLabels > 0){
+		    var printer = ipp.Printer("http://127.0.0.1:631/printers/"+printerName);
+		    var file = {
+		        "operation-attributes-tag":{
+		            "requesting-user-name": "User",
+		        "job-name": "Print Job",
+		        "document-format": "application/pdf"
+		        },
+		        data: Buffer.concat(buffers)
+		    };
+		
+		    printer.execute("Print-Job", file, function (err, res) {
+		        console.log('Printed: '+res.statusCode);
+		        console.log(res);
+		        // Callback
+		        var x = {
+		        	'type': 'printback',
+		        	'session': fromSession,
+		        	'data': res
+		        };
+		        client.send('kidddox'+db.settings.id, JSON.stringify(x))
+		    });
+	    }
+	});
+	
 	// LANDSCAPE TAG
 	doc.rotate(90);
 	// FIRST PDF PAGE IS AUTOMATICALLY CREATED
@@ -81,71 +110,45 @@ function print(printerName, kids, fromSession) {
 			doc.fontSize(40).font('Helvetica-Bold').fillColor('white').text(code, 182, -52, {width:100,align:'center'});
 		}
 	}
+	doc.end();
 	console.log('Printing to '+printerName);
-	
-	// GENERATE PDF & SEND TO PRINTER
-	if (totalLabels > 0){
-		doc.output(function(pdf){
-			var printer = ipp.Printer('http://127.0.0.1:631/printers/'+printerName);
-			var file = {
-				'operation-attributes-tag':{
-					'requesting-user-name': 'Josiah',
-					'job-name': 'Print Job',
-					'document-format': 'application/pdf'
-				},
-				data: new Buffer(pdf, 'binary')
-			};
-			printer.execute('Print-Job', file, function (err, res) {
-				console.log('Printed: '+res.statusCode);
-				console.log(res);
-				// Callback
-				var x = {
-					'type': 'printback',
-					'session': fromSession,
-					'data': res
-				};
-				client.send('kidddox'+db.settings.id, JSON.stringify(x))
-			})
-		})
-	} else {
-		var x = {
-			'type': 'printback',
-			'session': fromSession,
-			'data': 'No labels assigned for this person'
-		};
-		client.send('kidddox'+db.settings.id, JSON.stringify(x))
-	}
 }
 function testPrint(printerName, fromSession) {
 	var doc = new PDFDocument({
 		size: [165,288],// 30256 DYMO Large Shipping Labels
 		margins: 1
 	});
+	
+	var buffers = [];
+	doc.on('data', buffers.push.bind(buffers));
+	doc.on('end', function () {
+	    var printer = ipp.Printer("http://127.0.0.1:631/printers/"+printerName);
+	    var file = {
+	        "operation-attributes-tag":{
+	            "requesting-user-name": "User",
+	        "job-name": "Print Job",
+	        "document-format": "application/pdf"
+	        },
+	        data: Buffer.concat(buffers)
+	    };
+	
+	    printer.execute("Print-Job", file, function (err, res) {
+	        console.log('Printed: '+res.statusCode);
+	        console.log(res);
+	        // Callback
+	        var x = {
+	        	'type': 'printback',
+	        	'session': fromSession,
+	        	'data': res
+	        };
+	        client.send('kidddox'+db.settings.id, JSON.stringify(x))
+	    });
+	});
+	
 	doc.rotate(90);
 	doc.fontSize(36).font('Helvetica-Bold').text('Test', 14, -150);
-	console.log('Printing to '+printerName);
-	doc.output(function(pdf){
-		var printer = ipp.Printer('http://127.0.0.1:631/printers/'+printerName);
-		var file = {
-			'operation-attributes-tag':{
-				'requesting-user-name': db.settings.name,
-				'job-name': 'Test Job',
-				'document-format': 'application/pdf'
-			},
-			data: new Buffer(pdf, 'binary')
-		};
-		printer.execute('Print-Job', file, function (err, res) {
-			console.log('Printed: '+res.statusCode);
-			console.log(res);
-			// Callback
-			var x = {
-				'type': 'printback',
-				'session': fromSession,
-				'data': res
-			};
-			client.send('kidddox'+db.settings.id, JSON.stringify(x))
-		})
-	})
+	
+	doc.end();
 }
 
 // REALTIME.CO COMMUNICATION
@@ -171,6 +174,7 @@ function realtime() {
 	client.connect(appKey, authToken);
 }
 function msg(m) {
+	var mm = m;
 	m = JSON.parse(m);
 	if (m.type=='print' && db.settings.printSolo==0){
 		if (m.children==0){
@@ -182,6 +186,7 @@ function msg(m) {
 	if (m.type=='save'){
 		load()
 	}
+	console.log('Message Received: '+mm+', PrintSolo: '+db.settings.printSolo)
 }
 
 // FORMATTING UTILITIES
