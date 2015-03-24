@@ -53,7 +53,7 @@ Create a directory for NodeJS - which is the platform that our Print Server will
 
     sudo mkdir /opt/node
 
-Download Node.js:
+Download Node.js (replace v0.10.2 with the current version):
 
     wget http://nodejs.org/dist/v0.10.2/node-v0.10.2-linux-arm-pi.tar.gz
 
